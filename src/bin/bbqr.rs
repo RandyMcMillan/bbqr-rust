@@ -62,21 +62,22 @@ fn default() {
     print!("\ndefault");
     help();
 }
-use qrcode::QrCode;
 use image::Luma;
+use qrcode::QrCode;
 
-fn render(data:&str) {
+fn render(data: &str) {
     let code = QrCode::new(&data).unwrap();
     let image = code.render::<Luma<u8>>().build();
     image.save("/tmp/qrcode.png").unwrap();
-    let string = code.render::<char>()
+    let string = code
+        .render::<char>()
         .quiet_zone(false)
         .module_dimensions(2, 1)
         .build();
     println!("\n\n\n{}\n\n\n", string);
 }
-fn main(){
- use std::env;
+fn main() {
+    use std::env;
     let args = env::args();
     let mut getnext: [u8; 5] = [0; 5];
     if args.len() >= 2 {

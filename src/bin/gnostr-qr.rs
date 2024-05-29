@@ -1,5 +1,5 @@
-use std::env;
 use sha2::{Digest, Sha256};
+use std::env;
 use std::str;
 
 fn sha256_string(data: &str) -> Result<String, String> {
@@ -76,23 +76,24 @@ fn default() {
     print!("\ndefault");
     help();
 }
-use qrcode::QrCode;
 use image::Luma;
+use qrcode::QrCode;
 
-fn render(data:&str) {
+fn render(data: &str) {
     let code = QrCode::new(&data).unwrap();
     let hash = sha256_string(&data).unwrap();
     let image = code.render::<Luma<u8>>().build();
-    let location = format!("{}.png",hash);
+    let location = format!("{}.png", hash);
     image.save(location).unwrap();
-    let string = code.render::<char>()
+    let string = code
+        .render::<char>()
         .quiet_zone(false)
         .module_dimensions(2, 1)
         .build();
     println!("{}", string);
 }
-fn main(){
- use std::env;
+fn main() {
+    use std::env;
     let args = env::args();
     let mut getnext: [u8; 5] = [0; 5];
     if args.len() >= 2 {
