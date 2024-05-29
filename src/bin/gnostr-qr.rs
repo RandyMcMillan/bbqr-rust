@@ -1,4 +1,18 @@
 use std::env;
+use sha2::{Digest, Sha256};
+use std::str;
+
+fn sha256_string(data: &str) -> Result<String, String> {
+    let mut hasher = Sha256::new();
+    hasher.update(data.as_bytes());
+    let result = hasher.finalize();
+
+    // Convert the hash result (byte array) to a hex string
+    let hex_result = hex::encode(result);
+
+    Ok(hex_result.to_string())
+}
+
 pub fn handle_command(mut args: env::Args) -> Result<bool, Box<dyn std::error::Error>> {
     print!("\nhandle_command");
     let _ = args.next(); // program name
@@ -67,13 +81,15 @@ use image::Luma;
 
 fn render(data:&str) {
     let code = QrCode::new(&data).unwrap();
+    let hash = sha256_string(&data).unwrap();
     let image = code.render::<Luma<u8>>().build();
-    image.save("/tmp/qrcode.png").unwrap();
+    let location = format!("{}.png",hash);
+    image.save(location).unwrap();
     let string = code.render::<char>()
         .quiet_zone(false)
         .module_dimensions(2, 1)
         .build();
-    println!("\n\n\n{}\n\n\n", string);
+    println!("{}", string);
 }
 fn main(){
  use std::env;
